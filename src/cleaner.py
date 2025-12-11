@@ -79,7 +79,8 @@ class CsvCleaner:
                 if pd.isna(val) or str(val).lower() == 'nan': return np.nan
                 val = str(val).replace('$', '').replace('M', '')
                 try:
-                    return float(val) * 1_000_000
+                    # User request: Keep in Millions, don't multiply by 1M.
+                    return float(val) 
                 except:
                     return np.nan
             self.df['Gross_Clean'] = self.df['Gross'].apply(parse_gross)
@@ -190,7 +191,11 @@ class CsvCleaner:
             # 2. Replace -1 (placeholder) with NaN
             self.df['Year'] = self.df['Year'].replace(-1, np.nan)
 
-        # 3. Fill missing votes with 0, as strictly requested for the final output.
+        # 3. Rename Gross_Clean to Gross ($M)
+        if 'Gross_Clean' in self.df.columns:
+            self.df.rename(columns={'Gross_Clean': 'Gross ($M)'}, inplace=True)
+
+        # 4. Fill missing votes with 0, as strictly requested for the final output.
         if 'VOTES' in self.df.columns:
             self.df['VOTES'] = self.df['VOTES'].fillna(0)
             

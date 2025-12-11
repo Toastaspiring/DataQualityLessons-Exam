@@ -39,8 +39,9 @@ La distinction se fait par l'analyse syntaxique de la colonne brute `YEAR` :
     3.  **Traitement des vides** : Les valeurs manquantes sont remplies par `0` uniquement à la toute fin du processus (Option C), pour ne pas fausser les moyennes intermédiaires.
 *   **`Gross`** :
     1.  Suppression des symboles `$` et `M`.
-    2.  Multiplication par 1 000 000 pour obtenir la valeur réelle.
-    3.  Les erreurs de conversion sont transformées en `NaN`.
+    2.  Conversion en float (Unités : **Millions de dollars**).
+    3.  Renommage de la colonne en `Gross ($M)`.
+    4.  Les erreurs de conversion sont transformées en `NaN`.
 
 ### 3. Gestion des Outliers (Validité)
 *   **`RunTime`** : Les durées sont validées.
