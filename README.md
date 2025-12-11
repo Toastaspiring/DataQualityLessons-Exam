@@ -54,10 +54,19 @@ On regarde la colonne Year. Si il y a un trait d'union (ex: 2019- ), c'est une s
 ```
 
 3. Nettoyage des colonnes
+- Year : on extrait uniquement les 4 chiffres avec une regex, ce qui ignore automatiquement les chiffres romains (ex: "(I)") souvent présents.
 - Votes : on enlève les virgules et on convertit en nombre.
 - Gross : on enlève les $ et M, on garde la valeur en Millions de dollars.
 - Runtime : on supprime les valeurs absurdes (négatives ou supérieures à 50 000 minutes).
 - Textes : on a utilisé des regex pour virer les placeholders du type "Add a plot" ou "-1".
+
+Year (Extraction 4 chiffres / Ignore Romain):
+```python
+        def extract_year(val):
+            if pd.isna(val): return None
+            match = re.search(r'(\d{4})', str(val))
+            return int(match.group(1)) if match else None
+```
 
 Votes et Gross en Millions:
 ```python
