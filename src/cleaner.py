@@ -204,5 +204,6 @@ class CsvCleaner:
         return initial_count - final_count
 
     def save_data(self, filepath):
-        self.df.to_csv(filepath, index=False)
+        # User requested explicit "NaN" in the text file instead of empty strings
+        self.df.to_csv(filepath, index=False, na_rep='NaN')
         return filepath
