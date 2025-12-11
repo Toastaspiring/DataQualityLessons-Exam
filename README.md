@@ -45,7 +45,7 @@ La distinction se fait par l'analyse syntaxique de la colonne brute `YEAR` :
 ### 3. Gestion des Outliers (Validité)
 *   **`RunTime`** : Les durées sont validées.
     *   Si `t <= 0` (ex: négatifs) -> Suppression (`NaN`).
-    *   Si `t > 600` min (ex: 1 million de minutes) -> Suppression (`NaN`).
+    *   Si `t > 50,000` min (ex: 1 million de minutes) -> Suppression (`NaN`). On accepte les séries longues.
 *   **`ONE-LINE` (Synopsis)** : Détection et suppression des descriptions génériques via Regex (ex: *"Add a Plot"*, *"See full summary"*). Ces valeurs sont remplacées par `NaN`.
 
 ### 4. Agrégation des Doublons (Smart Deduplication)

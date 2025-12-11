@@ -89,9 +89,10 @@ class CsvCleaner:
         if 'RunTime' in self.df.columns:
             self.df['RunTime'] = pd.to_numeric(self.df['RunTime'], errors='coerce')
             
-            # User request: remove aberrant values like 1000000 or negative
-            # Let's set reasonable bounds: 0 < runtime < 500 (most movies/shows)
-            mask_outliers = (self.df['RunTime'] <= 0) | (self.df['RunTime'] > 600) 
+            # User request: remove TRULY aberrant values. 
+            # Series can be long (> 1000 min). 
+            # We set limit to 50,000 (approx 830 hours) to allow massive series but catch "1,000,000".
+            mask_outliers = (self.df['RunTime'] <= 0) | (self.df['RunTime'] > 50000) 
             self.df.loc[mask_outliers, 'RunTime'] = np.nan
 
     def extract_stars_director(self):
