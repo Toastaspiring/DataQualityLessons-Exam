@@ -1,4 +1,4 @@
-MOVIES,Year,RATING,VOTES,RunTime,Gross ($M),GENRE,ONE-LINE,Director,Stars,Type,Status
+MOVIES,Year,RATING,VOTES,RunTime,Gross ($M),GENRE,ONE-LINE,Director,Actors,Type,Status
 #AnneFrank - Parallel Stories,2019.0,6.5,1296.0,92.0,NaN,"Drama, History","It is based on five women who did survive the Holocaust but shared her same fate of ""deportation, suffering and being denied their childhood and adolescence,"" according to promotional materials.","Sabina Fedeli, Anna Migotto","Helen Mirren, Anne Frank, Martina Gatti, Arianna Szorenyi",Movie,Released
 #BlackAF,2020.0,6.8,4200.0,36.0,NaN,Comedy,A father takes an irreverent and honest approach to parenting and relationships.,NaN,"Rashida Jones, Kenya Barris, Iman Benson, Genneya Walton",Movie,Released
 #HappyBirthdaySense8,2017.0,8.9,828.0,15.0,NaN,Short,NaN,Josh Oreck,"Freema Agyeman, Jamie Clayton, Tina Desai, Bae Doona",Movie,Released

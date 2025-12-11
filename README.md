@@ -55,6 +55,10 @@ Lors de la fusion des entrées multiples pour un même film (Title + Year) :
     *   *Exemple : Film A (Note: 8) + Film A (Note: NaN) = Moyenne 8 (et non 4).*
 *   **Textes** : Conservation de la première valeur non-nulle trouvée.
 
+### 5. Extraction de Métadonnées (Feature Engineering)
+*   **Categorisation** : `Type` (Movie/Series) et `Status` (Released/Ongoing/Ended) inférés.
+*   **Découplage** : Séparation propre des Réalisateurs (`Director`) et du Casting (`Actors`).
+
 ---
 
 ## 🚀 Utilisation

@@ -191,19 +191,22 @@ class CsvCleaner:
             # 2. Replace -1 (placeholder) with NaN
             self.df['Year'] = self.df['Year'].replace(-1, np.nan)
 
-        # 3. Rename Gross_Clean to Gross ($M), Director_Clean -> Director, Stars_Clean -> Stars
+        # 3. Rename Gross_Clean to Gross ($M), Director_Clean -> Director, Stars_Clean -> Stars->Actors
         rename_map = {
             'Gross_Clean': 'Gross ($M)',
             'Director_Clean': 'Director',
-            'Stars_Clean': 'Stars'
+            'Stars_Clean': 'Actors'
         }
         self.df.rename(columns=rename_map, inplace=True)
 
-        # 4. Clean potential placeholders (-1) in text columns (User reported issue)
-        for col in ['Director', 'Stars']:
+        # 4. Clean potential placeholders (-1) in text columns (User reported issue "drowned in rows")
+        # We enforce a strict cleanup on specific columns + a general pass.
+        target_cols = ['Director', 'Actors', 'GENRE', 'ONE-LINE', 'MOVIES']
+        for col in target_cols:
             if col in self.df.columns:
-                # Replace -1 (int or str) and empty strings with NaN
-                self.df[col] = self.df[col].replace([-1, '-1', ''], np.nan)
+                # Replace -1, "-1", "-1.0" or any string starting/ending with it if it looks like garbage
+                # Simple exact match is safest to avoid destroying words. 
+                self.df[col] = self.df[col].replace([-1, '-1', '-1.0', ''], np.nan)
 
         # 5. Fill missing votes with 0, as strictly requested for the final output.
         if 'VOTES' in self.df.columns:
