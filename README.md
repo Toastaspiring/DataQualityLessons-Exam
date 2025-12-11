@@ -18,25 +18,41 @@ L'analyse approfondie a permis de qualifier précisemment le dataset.
 
 ---
 
-## 🧹 Stratégie de Nettoyage "Qualité Maximale"
+## 🧹 Stratégie de Nettoyage & Logique Détaillée
 
-Pour atteindre un niveau de qualité supérieur, nous avons appliqué les transformations suivantes dans `src/cleaner.py` :
+Pour garantir une transparence totale sur la qualité des données, voici les règles techniques appliquées à chaque champ :
 
-### 1. Nettoyage Sémantique (V2)
-*   **Suppression des Placeholders** : Identification et suppression automatique des chaînes parasites ("Add a Plot", etc) remplacées par `NaN`.
-*   **Typage Strict** : Conversion des `VOTES` et `Gross` en numérique.
-*   **Validité** : Suppression des `RunTime` aberrants (négatifs ou extrêmes).
+### 1. Classification (Film vs Série) & Statut
+La distinction se fait par l'analyse syntaxique de la colonne brute `YEAR` :
+*   **Film (`Movie`)** : Si la date est une année unique ex: `(2020)`.
+*   **Série (`Series`)** : Si la date contient un intervalle (trait d'union) ex: `(2019-2020)` ou `(2019- )`.
+*   **Statut (`Status`)** :
+    *   **Ongoing (En cours)** : Si l'intervalle est ouvert, détecté par le pattern Regex `(\d{4})[\s]*[–-][\s]*\)`. Ex: `(2019- )`.
+    *   **Ended (Terminé)** : Si l'intervalle est fermé. Ex: `(2019-2021)`.
+    *   **Released (Sorti)** : Statut par défaut pour les films.
 
-### 2. Agrégation Intelligente (Smart Deduplication)
-*   **Fusion Intelligente** : Les doublons sont fusionnés (Titre + Année).
-*   **Conservation de l'Information** :
-    *   **Scores/Durées** : On calcule la moyenne des valeurs disponibles (**en ignorant les champs vides**, pour ne pas diluer la moyenne).
-    *   **Votes** : Moyennés sans compter les manquants, avec replissage à 0 uniquement en dernier recours.
-*   **Gain** : Passage de ~10 000 lignes brutes à ~6 500 entrées consolidées.
+### 2. Nettoyage et Typage (Parsing)
+*   **`Year`** : Extraction des 4 premiers chiffres via Regex `(\d{4})`. Les valeurs fantaisistes (chiffres romains, texte) sont ignorées.
+*   **`VOTES`** :
+    1.  Suppression des virgules (`1,234` -> `1234`).
+    2.  Conversion en numérique (Float).
+    3.  **Traitement des vides** : Les valeurs manquantes sont remplies par `0` uniquement à la toute fin du processus (Option C), pour ne pas fausser les moyennes intermédiaires.
+*   **`Gross`** :
+    1.  Suppression des symboles `$` et `M`.
+    2.  Multiplication par 1 000 000 pour obtenir la valeur réelle.
+    3.  Les erreurs de conversion sont transformées en `NaN`.
 
-### 3. Extraction de Métadonnées (Feature Engineering)
-*   **Categorisation** : `Type` (Movie/Series) et `Status` (Released/Ongoing/Ended) inférés.
-*   **Découplage** : Séparation propre des Réalisateurs (`Director_Clean`) et du Casting (`Stars_Clean`).
+### 3. Gestion des Outliers (Validité)
+*   **`RunTime`** : Les durées sont validées.
+    *   Si `t <= 0` (ex: négatifs) -> Suppression (`NaN`).
+    *   Si `t > 600` min (ex: 1 million de minutes) -> Suppression (`NaN`).
+*   **`ONE-LINE` (Synopsis)** : Détection et suppression des descriptions génériques via Regex (ex: *"Add a Plot"*, *"See full summary"*). Ces valeurs sont remplacées par `NaN`.
+
+### 4. Agrégation des Doublons (Smart Deduplication)
+Lors de la fusion des entrées multiples pour un même film (Title + Year) :
+*   **Score/Durée** : Moyenne arithmétique des valeurs **existantes** (on ignore les `NaN`).
+    *   *Exemple : Film A (Note: 8) + Film A (Note: NaN) = Moyenne 8 (et non 4).*
+*   **Textes** : Conservation de la première valeur non-nulle trouvée.
 
 ---
 
