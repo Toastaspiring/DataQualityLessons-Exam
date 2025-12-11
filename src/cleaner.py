@@ -182,7 +182,14 @@ class CsvCleaner:
 
         self.df = df_agg
         
-        # FINAL STEP: Now we fill missing votes with 0, as strictly requested for the final output.
+        # FINAL STEP: Fix names and placeholders
+        # 1. Rename YEAR_Clean_Group -> Year
+        if 'YEAR_Clean_Group' in self.df.columns:
+            self.df.rename(columns={'YEAR_Clean_Group': 'Year'}, inplace=True)
+            # 2. Replace -1 (placeholder) with NaN
+            self.df['Year'] = self.df['Year'].replace(-1, np.nan)
+
+        # 3. Fill missing votes with 0, as strictly requested for the final output.
         if 'VOTES' in self.df.columns:
             self.df['VOTES'] = self.df['VOTES'].fillna(0)
             
